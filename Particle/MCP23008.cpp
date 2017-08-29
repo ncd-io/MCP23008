@@ -8,16 +8,22 @@ MCP23008::MCP23008() : timer(100, &MCP23008::momentaryOff, *this, true) {
 }
 MCP23008::~MCP23008(){
 }
+
+//Use this to set the first n channels as outputs
 void MCP23008::setOutputs(int num){
     ioset = 256 - (1 << num);
     relayCount = num;
     setIoDir();
 }
+
+//Use this to set a specific channel as an output
 void MCP23008::setOutput(int num){
     ioset = ioset ^ (1<<(num-1));
     iosetCustom = true;
     setIoDir();
 }
+
+//Set the IO direction of all channels
 void MCP23008::setIoDir(){
     //Start I2C port
     Wire.begin();
@@ -26,14 +32,20 @@ void MCP23008::setIoDir(){
     sendCommand(0x06, ioset);
     readStatus();
 }
+
+//Set the address based on installed jumpers, if jumper 1 is installed, a0 should equal 1 otherwise 0 etc.
 void MCP23008::setAddress(int a0, int a1, int a2){
     address |= (a0*1+a1*2+a2*4);
     setIoDir();
 }
+
+//Set the address as an integer
 void MCP23008::setAddress(int a){
     address = a;
     setIoDir();
 }
+
+//psudo methods to turn on, off, or toggle a specific relay
 void MCP23008::turnOnRelay(int relay){
   relayOp(relay, 1);
 }
@@ -43,6 +55,15 @@ void MCP23008::turnOffRelay(int relay){
 void MCP23008::toggleRelay(int relay){
   relayOp(relay, 3);
 }
+
+//Primary function for setting the status of a single relay, op can be derived from previous psuedo methods
+void MCP23008::relayOp(int relay, int op){
+    byte rbit = (1<<(relay-1));
+    if((ioset & rbit) > 0) return;
+    setBankStatus(bitop(bankStatus, rbit, op));
+}
+
+//Uses a software timer to turn on a relay for a specific duration
 void MCP23008::momentaryRelay(int relay, int duration){
     _momentaryRelay = relay;
     relayOp(relay, 1);
@@ -54,17 +75,6 @@ void MCP23008::momentaryRelay(int relay){
 }
 void MCP23008::momentaryOff(){
     relayOp(_momentaryRelay, 2);
-}
-void MCP23008::relayOp(int relay, int op){
-    byte rbit = (1<<(relay-1));
-    if((ioset & rbit) > 0) return;
-    setBankStatus(bitop(bankStatus, rbit, op));
-}
-byte MCP23008::bitop(byte b1, byte b2, int op){
-  if(op == 1) return b1 | b2;
-  if(op == 2) return b1 & ~b2;
-  if(op == 3) return b1 ^ b2;
-  return 0;
 }
 
 void MCP23008::turnOnAllRelays(){
@@ -189,6 +199,14 @@ int MCP23008::sendCommand(int reg, int cmd){
     retrys = 0;
     return ret;
 }
+
+byte MCP23008::bitop(byte b1, byte b2, int op){
+  if(op == 1) return b1 | b2;
+  if(op == 2) return b1 & ~b2;
+  if(op == 3) return b1 ^ b2;
+  return 0;
+}
+
 int MCP23008::relayTalk(String command){
     int relay=0;
     int op=0;
