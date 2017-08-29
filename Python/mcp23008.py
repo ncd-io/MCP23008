@@ -5,7 +5,7 @@
 # https://www.controleverything.com/content/Relay-Controller?sku=MCP23008_REG_I2CR8G5LE_10A#tabs-0-product_tabset-2
 
 import smbus
-import mcp23008
+
 # Get I2C bus
 bus = smbus.SMBus(1)
 
@@ -65,7 +65,7 @@ MCP23008_GPIO_PIN_LOW                = 0x00 # Logic-low on All Pins
 #possibly pass number of relays in instantiation to automatically select how many GPIOs. Or just pass those in during object instantiate to statically set/turn off access to them
 
 class mcp23008:
-    def __init__(self, kwargs):
+    def __init__(self, kwargs = {}):
         self.__dict__.update(kwargs)
         #set address to default if not passed
         if not hasattr(self, 'address'):
@@ -83,7 +83,7 @@ class mcp23008:
         
 
     def set_output_register(self, register_value):
-        bus.write_byte_data(MCP23008_DEFAULT_ADDRESS, MCP23008_REG_IODIR, register_value)
+        bus.write_byte_data(self.address, MCP23008_REG_IODIR, register_value)
 
 # Need to check and make sure the registration bits are correct
     def set_gpio_high(self, target_gpio, status = None):
@@ -124,18 +124,18 @@ class mcp23008:
         self.toggle_gpio(target_relay)
     
     def get_single_gpio_status(self, target_gpio):
-        status = self.get_all_gpio_status
+        status = self.get_all_gpio_status()
         target_byte_value = 1 << target_gpio
-        return status & target_byte_value != 0
+        return (status & target_byte_value) != 0
         
     def get_all_gpio_status(self):
-        return bus.read_byte_data(MCP23008_DEFAULT_ADDRESS, MCP23008_REG_GPIO)
+        return bus.read_byte_data(self.address, MCP23008_REG_GPIO)
     
     def get_all_gpio_resistor_settings(self):
-        return bus.read_byte_data(MCP23008_DEFAULT_ADDRESS, MCP23008_REG_GPPU)
+        return bus.read_byte_data(self.address, MCP23008_REG_GPPU)
     
     def pull_up_gpio(self, target_gpio):
         target_byte_value = 1 << target_gpio
         status = self.get_all_gpio_resistor_settings()
         new_status_byte = status | target_byte_value
-        bus.write_byte_data(MCP23008_DEFAULT_ADDRESS, MCP23008_REG_GPPU, new_status_byte)
+        bus.write_byte_data(self.address, MCP23008_REG_GPPU, new_status_byte)
