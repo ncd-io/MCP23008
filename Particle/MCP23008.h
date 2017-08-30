@@ -11,12 +11,16 @@ public:
     //Set Address.  Indicate status of jumpers on board.  Send 0 for not installed, send 1 for installed
     void setAddress(int a0, int a1, int a2);
     void setAddress(int a);
-    //Set number or outputs, for relay boards they wills start at 0, if you need outputs at specific locations
-    //use the setAsOutput method for each
-    void setOutputs(int num);
+    //Set number or outputs, for relay boards they will start at 0, if you need outputs at specific locations
+    //use the setAsOutput method for each, or call setOutputs with a byte map where each bit is either 1 (an output) or 2 (an input)
+    void setRelays(int num);
+    void setOutputs(int map);
     void setOutput(int num);
+    
+    //The map is a single bytes with the bits set for inputs that should be pulled up e.g. 00000011 (or 3) will pull inputs 0 and 1 high, all others will be floating
+    void setInputs(int map);
 
-    void setIoDir();
+    void init();
     //Turn on Relay
     void turnOnRelay(int relay);
     //Turn off Relay
@@ -61,15 +65,16 @@ private:
     //Status of relays in bank 1
     
     byte inputStatus;
-    byte ioset = 255;
+    byte outputMap = 255;
+    byte inputMap = 0;
+    
     bool iosetCustom = false;
     int relayCount = 0;
 
     int _momentaryRelay;
 
     int address = 0x20;
-    int address2 = 0x21;
+    
     int retrys = 0;
-    byte outputRegister = 0x0A;
     Timer timer;
 };
