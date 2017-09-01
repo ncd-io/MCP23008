@@ -3,7 +3,7 @@
 
 For your convenience we have provided a few examples of using this library to do simple tasks.
 
-##Simple Relay Control
+## Simple Relay Control
 
 This example simply runs in an infinite loop and uses static set high and low GPIO commands as well as toggle GPIO commands.
 
