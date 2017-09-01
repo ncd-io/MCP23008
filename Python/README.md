@@ -52,7 +52,7 @@ get_single_gpio_status(target_gpio)
 ```cpp
 get_all_gpio_status()
 ```
-A call to this method will read the status of the relay and return the current on/off
+>A call to this method will read the status of the relay and return the current on/off
 >status of the relay.  1 will be returned if the relay is on and 0 will be returned if the relay is off. 
 >256 will be returned if an error has occured(generally due to lack of communication with the controller).
 
@@ -60,26 +60,5 @@ A call to this method will read the status of the relay and return the current o
 ```cpp
 pull_up_gpio(target_gpio)
 ```
->This method accepts one int argument and returns one int.  Valid input int arguments 1-7.  A call to this
->method will read the status of the given input passed by the input argumetn and return the current closed/open
->status of the given input.  1 will be returned if the input is closed and 0 will be returned if the input is open.
->256 will be returned if an error has occured(generally due to lack of communication with the controller).
-
-
-```cpp
-set_output_register(register_value)
-```
->This method accepts no arguments and returns one byte.  A call to this
->method will read and return the status of all 7 inputs on the board. 
->Each input on the board is represented as a bit in the returned byte.  Valid returns are 0-128.  If the input is closed 
->the bit in the byte is set to 1, if the input is open the bit in the byte is set to 0.  256 will be
->returned if an error has occured(generally due to lack of communciation with controller).
-
-```cpp
-set_output_register(register_value)
-```
->This method accepts no arguments and returns one byte.  A call to this
->method will read and return the status of all 7 inputs on the board. 
->Each input on the board is represented as a bit in the returned byte.  Valid returns are 0-128.  If the input is closed 
->the bit in the byte is set to 1, if the input is open the bit in the byte is set to 0.  256 will be
->returned if an error has occured(generally due to lack of communciation with controller).
+>This method pulls up the target GPIO. This is the most common state needed in GPIO input needs. This state will allow you
+>to connect a simple switch or contact closure output sensor to your GPIO and reliably read it.
