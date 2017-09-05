@@ -4,11 +4,6 @@
 # This code is designed to work with the MCP23008_REG_I2CR8G5LE_10A I2C relay controller available from ControlEverything.com.
 # https://www.controleverything.com/content/Relay-Controller?sku=MCP23008_REG_I2CR8G5LE_10A#tabs-0-product_tabset-2
 
-import smbus
-
-# Get I2C bus
-bus = smbus.SMBus(1)
-
 # I2C address of the device
 MCP23008_DEFAULT_ADDRESS            = 0x20
 
@@ -65,25 +60,25 @@ MCP23008_GPIO_PIN_LOW                = 0x00 # Logic-low on All Pins
 #possibly pass number of relays in instantiation to automatically select how many GPIOs. Or just pass those in during object instantiate to statically set/turn off access to them
 
 class mcp23008:
-    def __init__(self, kwargs = {}):
+    def __init__(self, smbus, kwargs = {}):
         self.__dict__.update(kwargs)
         #set address to default if not passed
         if not hasattr(self, 'address'):
             self.address = MCP23008_DEFAULT_ADDRESS
-        
+        self.smbus = smbus
         #we only need to know which are outputs as the chip sets all GPIOs as inputs by default for safety reasons.
         if hasattr(self, 'gpio_output_map'):
             register_byte = 255
             for channel in self.gpio_output_map:
                 register_byte = register_byte ^ 1 << channel
                 
-            if(register_byte != 0):
+            if(register_byte != 255):
                 self.set_output_register(register_byte)
 
         
 
     def set_output_register(self, register_value):
-        bus.write_byte_data(self.address, MCP23008_REG_IODIR, register_value)
+        self.smbus.write_byte_data(self.address, MCP23008_REG_IODIR, register_value)
 
 # Need to check and make sure the registration bits are correct
     def set_gpio_high(self, target_gpio, status = None):
@@ -92,7 +87,7 @@ class mcp23008:
             
         target_byte_value = 1 << target_gpio
         new_status_byte = status | target_byte_value
-        bus.write_byte_data(self.address, MCP23008_REG_GPIO, new_status_byte)
+        self.smbus.write_byte_data(self.address, MCP23008_REG_GPIO, new_status_byte)
 
 #pseudo method
     def turn_on_relay(self, target_relay, status = None):
@@ -104,7 +99,7 @@ class mcp23008:
             status = self.get_all_gpio_status()
         target_byte_value = 1 << target_gpio
         new_status_byte = status ^ target_byte_value
-        bus.write_byte_data(self.address, MCP23008_REG_GPIO, new_status_byte)
+        self.smbus.write_byte_data(self.address, MCP23008_REG_GPIO, new_status_byte)
 
 #pseudo method
     def turn_off_relay(self, target_relay, status = None):
@@ -129,13 +124,13 @@ class mcp23008:
         return (status & target_byte_value) != 0
         
     def get_all_gpio_status(self):
-        return bus.read_byte_data(self.address, MCP23008_REG_GPIO)
+        return self.smbus.read_byte_data(self.address, MCP23008_REG_GPIO)
     
     def get_all_gpio_resistor_settings(self):
-        return bus.read_byte_data(self.address, MCP23008_REG_GPPU)
+        return self.smbus.read_byte_data(self.address, MCP23008_REG_GPPU)
     
     def pull_up_gpio(self, target_gpio):
         target_byte_value = 1 << target_gpio
         status = self.get_all_gpio_resistor_settings()
         new_status_byte = status | target_byte_value
-        bus.write_byte_data(self.address, MCP23008_REG_GPPU, new_status_byte)
+        self.smbus.write_byte_data(self.address, MCP23008_REG_GPPU, new_status_byte)
