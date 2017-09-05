@@ -1,6 +1,10 @@
 #import time to allow some processing sleep. Not Required.
 import time
 from mcp23008 import mcp23008
+import smbus
+
+# Get I2C bus, this is bus 1
+bus = smbus.SMBus(1)
 
 #define which GPIOs are to be used as outputs. By default all GPIOs are defined as inputs.
 #pass the number of the GPIOs in a set to the object. 0 is the first relay 1 is the second relay etc.
@@ -11,7 +15,8 @@ from mcp23008 import mcp23008
 #since I am using the default address and have no outputs I don't need to pass this variable
 # kwargs = {'address': 0x20, 'gpio_output_map': gpio_output_map}
 #create the MCP23008 object from the MCP23008 library
-mcp23008 = mcp23008()
+#the object requires that you pass it the bus object so that it can communicate and share the bus with other chips if necessary
+mcp23008 = mcp23008(smbus)
 
 #by default the inputs are floating. I want to pull up input GPIO 4 so I can hook up a simple switch and read its status.
 mcp23008.pull_up_gpio(4)
