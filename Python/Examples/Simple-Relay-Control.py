@@ -1,6 +1,10 @@
 #import time to allow some processing sleep. Not Required.
 import time
 from mcp23008 import mcp23008
+import smbus
+
+# Get I2C bus, this is bus 1
+bus = smbus.SMBus(1)
 
 #define which GPIOs are to be used as outputs. By default all GPIOs are defined as inputs.
 #pass the number of the GPIOs in a set to the object. 0 is the first relay 1 is the second etc.
@@ -8,7 +12,8 @@ gpio_output_map =  {0,1,2,3}
 #kwargs is a Python set that contains the address of your device and the output map to be passed to the object for initialization.
 kwargs = {'address': 0x20, 'gpio_output_map': gpio_output_map}
 #create the MCP23008 object from the MCP23008 library and pass it the GPIO output map and address defined above
-mcp23008 = mcp23008(kwargs)
+#the object requires that you pass it the bus object so that it can communicate and share the bus with other chips if necessary
+mcp23008 = mcp23008(bus, kwargs)
 
 
 while True :
