@@ -1,8 +1,7 @@
 # Distributed with a free-will license.
 # Use it any way you want, profit or free, provided it fits in the licenses of its associated works.
 # MCP23008
-# This code is designed to work with the MCP23008_REG_I2CR8G5LE_10A I2C relay controller available from ControlEverything.com.
-# https://www.controleverything.com/content/Relay-Controller?sku=MCP23008_REG_I2CR8G5LE_10A#tabs-0-product_tabset-2
+# This code is designed to work with the MCP23008_REG_I2CR8G5LE_10A I2C relay controller available from ncd.io.
 
 # I2C address of the device
 MCP23008_DEFAULT_ADDRESS            = 0x20
@@ -57,7 +56,6 @@ MCP23008_GPIO_PIN_HIGH                = 0xFF # Logic-high on All Pins
 MCP23008_GPIO_PIN_LOW                = 0x00 # Logic-low on All Pins
 
 
-#possibly pass number of relays in instantiation to automatically select how many GPIOs. Or just pass those in during object instantiate to statically set/turn off access to them
 
 class mcp23008:
     def __init__(self, smbus, kwargs = {}):
@@ -80,7 +78,6 @@ class mcp23008:
     def set_output_register(self, register_value):
         self.smbus.write_byte_data(self.address, MCP23008_REG_IODIR, register_value)
 
-# Need to check and make sure the registration bits are correct
     def set_gpio_high(self, target_gpio, status = None):
         if(status == None):
             status = self.get_all_gpio_status()
@@ -93,7 +90,6 @@ class mcp23008:
     def turn_on_relay(self, target_relay, status = None):
         self.set_gpio_high(target_relay, status)
         
-# Need to check and make sure the registration bits are correct
     def set_gpio_low(self, target_gpio, status = None):
         if(status == None):
             status = self.get_all_gpio_status()
