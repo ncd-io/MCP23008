@@ -3,10 +3,10 @@
 
 This Library is intended for use with any MCP23008 Relay Controller or GPIO board available from ncd.io
 
-###Developer information
+### Developer information
 NCD has been designing and manufacturing computer control products since 1995.  We have specialized in hardware design and manufacturing of Relay controllers for 20 years.  We pride ourselves as being the industry leader of computer control relay products.  Our products are proven reliable and we are very excited to support Particle.  For more information on NCD please visit ncd.io
 
-###Requirements
+### Requirements
 - The Python SMBus Module: https://pypi.python.org/pypi/smbus-cffi/
 - An I2C connection to an MCP23008 Chip
 - Knowledge base for developing and programming with Python.
@@ -20,7 +20,7 @@ The libary must be imported into your application. Once it is imported you can c
 This output map is a set of GPIO numbers that you would like to set as outputs. For example {0,1,2,3,6} would set channels
 0, 1, 2, 3, and 6 as outputs. Any channel with a relay on it should be configured as an output.
 
-###Public accessible methods
+### Publicly accessible methods
 ```cpp
 set_gpio_high(target_gpio)
 ```
@@ -32,7 +32,7 @@ set_gpio_high(target_gpio)
 set_gpio_low(target_gpio)
 ```
 >This function sets a GPIO to low. If this GPIO is configured as an output and has a relay on it the
->Relay will be turned off. The argument passed is an ingteger from 0-7 with 0 being the first GPIO on the chain.
+>Relay will be turned off. The argument passed is an integer from 0-7 with 0 being the first GPIO on the chain.
 
 
 ```cpp
@@ -60,5 +60,5 @@ get_all_gpio_status()
 ```cpp
 pull_up_gpio(target_gpio)
 ```
->This method pulls up the target GPIO. This is the most common state needed in GPIO input needs. This state will allow you
+>This method pulls up the target GPIO. This is the most common state needed in GPIO input applications. This state will allow you
 >to connect a simple switch or contact closure output sensor to your GPIO and reliably read it.
