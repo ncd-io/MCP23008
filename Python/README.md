@@ -20,6 +20,10 @@ The libary must be imported into your application. Once it is imported you can c
 This output map is a set of GPIO numbers that you would like to set as outputs. For example {0,1,2,3,6} would set channels
 0, 1, 2, 3, and 6 as outputs. Any channel with a relay on it should be configured as an output.
 
+When you create an instance of the MCP23008 object be sure to pass it the I2C bus and an array that contains which channels you want to configure as inputs.
+
+Each MCP23008 supports 8 GPIO pins from 0 to 7. We use these GPIOs to drive the relays so if you have 4 relays, then set the first four relays as outputs. You can do this by passing {0, 1, 2, 3} in the kwargs. See the examples for more information.
+
 ### Publicly accessible methods
 ```cpp
 set_gpio_high(target_gpio)
