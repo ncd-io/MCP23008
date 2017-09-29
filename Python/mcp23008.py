@@ -1,7 +1,7 @@
 # Distributed with a free-will license.
 # Use it any way you want, profit or free, provided it fits in the licenses of its associated works.
 # MCP23008
-# This code is designed to work with the MCP23008_REG_I2CR8G5LE_10A I2C relay controller available from ncd.io.
+# This code is designed to work with the I2C Relay Controllers I2C relay controller available from ncd.io.
 
 # I2C address of the device
 MCP23008_DEFAULT_ADDRESS            = 0x20
