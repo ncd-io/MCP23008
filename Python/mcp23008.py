@@ -93,8 +93,8 @@ class mcp23008:
     def set_gpio_low(self, target_gpio, status = None):
         if(status == None):
             status = self.get_all_gpio_status()
-        target_byte_value = 1 << target_gpio
-        new_status_byte = status ^ target_byte_value
+        target_byte_value = ~(1 << target_gpio)
+        new_status_byte = status & target_byte_value
         self.smbus.write_byte_data(self.address, MCP23008_REG_GPIO, new_status_byte)
 
 #pseudo method
