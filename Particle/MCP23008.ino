@@ -12,7 +12,7 @@ void setup() {
     relayController.setInputs(240);
     relayController.init();
     
-    relayController33.setAddress(1,0,0);
+    relayController33.setAddress(0,0,0);
     relayController33.setRelays(8);
     relayController33.init();
     
